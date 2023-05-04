@@ -5,30 +5,35 @@ const fs = require('fs');
 const bodyParser=require("body-parser");
 const mongoose = require('mongoose');
 const env = require('dotenv').config();
+const url = process.env.MONGO_DB_URL;
 
 
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.get('/', (req, res) => {
-    const readStream = fs.createReadStream("./home.html",'utf-8');
+    const readStream = fs.createReadStream("./Pages/home.html",'utf-8');
     readStream.pipe(res);
 }
 );
 
 app.get('/about', (req, res) => {
-    const readStream = fs.createReadStream("./about.html",'utf-8');
+    const readStream = fs.createReadStream("./Pages/about.html",'utf-8');
     readStream.pipe(res);
 });
 app.get('/contact', (req, res) => {
-    const readStream = fs.createReadStream("./contact.html",'utf-8');
+    const readStream = fs.createReadStream("./Pages/contact.html",'utf-8');
     readStream.pipe(res);
 });
 
 app.get('/home', (req, res) => {
-    const readStream = fs.createReadStream("./home.html",'utf-8');
+    const readStream = fs.createReadStream("./Pages/home.html",'utf-8');
     readStream.pipe(res);
 });
 
+app.get('/fetch', (req, res) => {
+    const readStream  =fs.createReadStream("./Pages/fetch.html",'utf-8');
+    readStream.pipe(res);
+});
 app.post('/submit', (req, res) => {
     const senderName = req.body.Name;
     const senderEmail = req.body.Email;
@@ -38,6 +43,23 @@ app.post('/submit', (req, res) => {
     res.render('./submit.pug', {Name: senderName, Email: senderEmail, Message: senderMessage});
 });
 
+app.post('/check', (req, res) => {
+    const checkValue = req.body.Password;
+    if(checkValue == "1234"){
+        res.render('users.pug', {data: []});
+    }
+    else{
+        res.status(
+            403).send('Forbidden');
+    }
+});
+
+
+app.post('/search', async(req, res) => {
+    const searchValue = req.body.name;
+    searchFunction(searchValue,req,res);
+    console.log(searchValue);
+});
 app.use(handle404);
 
 function handle404(req, res) {
@@ -50,7 +72,6 @@ app.listen(PORT_NUMBER, () => {
 
 async function sendDataToDatabase(name,email,subject,message){
     console.log(`Name:${name}\nEmail:${email}\nSubject:${subject}\nMessage:${message}`);
-    const url = process.env.MONGO_DB_URL;
     var contactSchema = new mongoose.Schema({
         Name: {
             type: String,
@@ -92,4 +113,49 @@ async function sendDataToDatabase(name,email,subject,message){
         console.log(err);
     }
     );
+    delete mongoose.connection.models['contacts'];
+}
+
+async function searchFunction(search,req,res){
+    await mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true}
+        ).then((value)=>{
+            value.connection.readyState==1?console.log(`Connected to database \n  Collection:${value.connection.db.databaseName}\n `):console.log("Not connected to database");
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+    const messeges = new mongoose.model('contacts',new mongoose.Schema({
+        Name: {
+            type: String,
+            required: true
+        },
+        Email:{
+            type:String,
+            required:true
+        },
+        Subject:{
+            type:String,
+            required:true
+        },
+        Message:{
+            type:String,
+            required:true
+        }
+
+    }));
+    messeges.find({Name:search}).then(value=>{
+        if(value.length==0){
+            console.log("No data found");
+            res.render('users.pug',{data:[]});
+        }
+        else{
+        console.table(value.map((value,index)=>{return {Name:value.Name,Email:value.Email,Subject:value.Subject,Message:value.Message}}));
+        res.render('users.pug',{data:value});
+        }
+    })
+        .catch(err=>{
+            console.log(err);
+        }
+        );
+    delete mongoose.connection.models['contacts'];
 }
