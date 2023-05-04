@@ -41,14 +41,48 @@ app.listen(PORT_NUMBER, () => {
     console.log(`Server is running on port ${PORT_NUMBER} \n http://localhost:${PORT_NUMBER}`);
 });
 
-function sendDataToDatabase(name,email,subject,message){
+async function sendDataToDatabase(name,email,subject,message){
     console.log(`Name:${name}\nEmail:${email}\nSubject:${subject}\nMessage:${message}`);
     const url = process.env.MONGO_DB_URL;
-    mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true}
-    ).then((value)=>{
-        value.connection.readyState==1?console.log(`Connected to database \n  Collection:${value.connection.db.databaseName}\n`):console.log("Not connected to database");
-    })
-    .catch((err)=>{
-        console.log(err);
+    var contactSchema = new mongoose.Schema({
+        Name: {
+            type: String,
+            required: true
+        },
+        Email:{
+            type:String,
+            required:true
+        },
+        Subject:{
+            type:String,
+            required:true
+        },
+        Message:{
+            type:String,
+            required:true
+        }
     });
+    await mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true}
+        ).then((value)=>{
+            value.connection.readyState==1?console.log(`Connected to database \n  Collection:${value.connection.db.databaseName}\n`):console.log("Not connected to database");
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+    const  Contact = mongoose.model('contacts',contactSchema);
+    const person = new Contact({
+        Name:name,
+        Email:email,
+        Subject:subject,
+        Message:message
+    });
+    person.save().then((value)=>{
+
+        console.log("Data saved to database");
+        console.log(value);
+    }
+    ).catch((err)=>{
+        console.log(err);
+    }
+    );
 }
