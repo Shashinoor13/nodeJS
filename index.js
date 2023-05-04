@@ -15,16 +15,16 @@ app.get('/', (req, res) => {
 }
 );
 
-app.get('/about.html', (req, res) => {
+app.get('/about', (req, res) => {
     const readStream = fs.createReadStream("./about.html",'utf-8');
     readStream.pipe(res);
 });
-app.get('/contact.html', (req, res) => {
+app.get('/contact', (req, res) => {
     const readStream = fs.createReadStream("./contact.html",'utf-8');
     readStream.pipe(res);
 });
 
-app.get('/home.html', (req, res) => {
+app.get('/home', (req, res) => {
     const readStream = fs.createReadStream("./home.html",'utf-8');
     readStream.pipe(res);
 });
@@ -37,6 +37,13 @@ app.post('/submit', (req, res) => {
     sendDataToDatabase(senderName, senderEmail,senderSubject,senderMessage);
     res.render('./submit.pug', {Name: senderName, Email: senderEmail, Message: senderMessage});
 });
+
+app.use(handle404);
+
+function handle404(req, res) {
+    res.status(404).render('error.pug', {title: "404: File Not Found", message: "The page you are looking for does not exist.", error: "404",image:"https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-5529.jpg?w=1380&t=st=1683204594~exp=1683205194~hmac=58a8d2e241b53e29b56eabd68c9d1060b3bd34d1fd6b7fb2a68abc42583c69df"});
+}
+
 app.listen(PORT_NUMBER, () => {
     console.log(`Server is running on port ${PORT_NUMBER} \n http://localhost:${PORT_NUMBER}`);
 });
