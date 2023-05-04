@@ -29,10 +29,10 @@ MONGO_DB_URL=mongodb://localhost/mydatabase
 ```
 ## Usage
 
-To start the server, `run npm start`:
+To start the server, `node --watch index.js`:
 
 ```
-npm start
+node --watch index.js
 ```
 
 This will start the server and print a message to the console indicating which port it is listening on.
