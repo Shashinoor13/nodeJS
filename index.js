@@ -1,9 +1,10 @@
-const PORT_NUMBER = 3000;
+const PORT_NUMBER =process.env.PORT || 3000;
 const express = require('express');
 const app = express();
 const fs = require('fs');
 const bodyParser=require("body-parser");
-const { CLIENT_RENEG_LIMIT } = require('tls');
+const mongoose = require('mongoose');
+const env = require('dotenv').config();
 
 
 app.use(bodyParser.urlencoded({extended:true}));
@@ -42,4 +43,12 @@ app.listen(PORT_NUMBER, () => {
 
 function sendDataToDatabase(name,email,subject,message){
     console.log(`Name:${name}\nEmail:${email}\nSubject:${subject}\nMessage:${message}`);
+    const url = process.env.MONGO_DB_URL;
+    mongoose.connect(url,{useNewUrlParser:true,useUnifiedTopology:true}
+    ).then((value)=>{
+        value.connection.readyState==1?console.log(`Connected to database \n  Collection:${value.connection.db.databaseName}\n`):console.log("Not connected to database");
+    })
+    .catch((err)=>{
+        console.log(err);
+    });
 }
