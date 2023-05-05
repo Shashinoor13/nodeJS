@@ -4,50 +4,69 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'
-    integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
     
-    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
     title Search Users
   body
-      .container
-        h1 Search Users
+    .container
+      h1 Search Users
 
-        form(action="/search", method="post")
-            .form-group
-                label Name
-                input.form-control(name="name", type="text")
-            .form-group
-                input.btn.btn-primary(type="submit", value="Search")
-        
-        form(action="/getAll", method="post")
-            .form-group
-                input.btn.btn-primary(type="submit", value="Search All")
+      form(action="/search", method="post")
+        .form-group
+          label Name
+          input.form-control(name="name", type="text" ,placeholder="Enter Name",value= text )
+        .form-group
+          input.btn.btn-primary(type="submit", value="Search")
+      
+      form(action="/getAll", method="post")
+        .form-group
+          input.btn.btn-primary(type="submit", value="Search All")
 
-        p #{data.length} results found
-        table.table.table-hover.table-dark
-            thead
-                tr
-                    th(scope='col') Name
-                    th(scope='col') Email
-                    th(scope='col') Subject
-                    th(scope='col') Message
-            tbody
-                -for (var i = 0; i < data.length; i++)
+      p #{data.length} results found
+      table.table.table-hover.table-dark
+        thead
+          tr
+            th(scope='col') Name
+            th(scope='col') Email
+            th(scope='col') Subject
+            th(scope='col') Message
+            th(scope='col') Action
+        tbody
+            -for (var i = 0; i < data.length; i++)
                     tr
                         td #{data[i].Name}
                         td #{data[i].Email}
                         td #{data[i].Subject}
                         td #{data[i].Message}
-        //- -for (var i = 0; i < data.length; i++)
-            //- ul
-            //- .list
-            //-     li  #{data[i].Name} - #{data[i].Email} - #{data[i].Subject} - #{data[i].Message}
-
-
-        script(src='https://code.jquery.com/jquery-3.2.1.min.js'
-        integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4='
-        crossorigin='anonymous')
+                        td
+                            form(action='/delete/'+data[i]._id, method="post")
+                                input.btn.btn-danger(type="submit", value="Delete")
+              
+      script(src='https://code.jquery.com/jquery-3.2.1.min.js', integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=', crossorigin='anonymous')
            
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'
-        integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous')
+      script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+      script.
+        $(document).ready(function() {
+
+            // Add click event to delete button
+            $('form[action^="/delete"]').on('submit', function(e) {
+            e.preventDefault(); // Prevent the form from submitting normally
+            var confirmDelete = confirm("Are you sure you want to delete this record?");
+            if (confirmDelete) {
+                var tr = $(this).closest('tr');
+                tr.remove();
+                var count = $('tbody tr').length;
+                    $('p').text(count + ' results found');
+                $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                }).done(function() {
+                console.log('Deleted Successfully');
+                }).fail(function() {
+                alert('Something went wrong');
+                });
+            }
+            });
+        });
+

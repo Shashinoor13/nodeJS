@@ -12,7 +12,7 @@ async function searchFunction(search,req,res){
         }
         else{
         console.table(value.map((value,index)=>{return {Name:value.Name,Email:value.Email,Subject:value.Subject,Message:value.Message}}));
-        res.render('users.pug',{data:value});
+        res.render('users.pug',{data:value,text:search});
         }
     })
         .catch(err=>{

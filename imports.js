@@ -8,5 +8,6 @@ const {contactSchema} = require('./model/ContactModel.js');
 const {sendDataToDatabase} = require('./model/UpdateDatabase.js');
 const {searchFunction} = require('./model/searchDatabase.js');
 const{servePage} = require('./routes/get.js');
+const {isAdmin} = require('./model/checkAdmin.js');
 
-module.exports = {app,fs,bodyParser,mongoose,connect,contactSchema,sendDataToDatabase,searchFunction,servePage};
+module.exports = {app,fs,bodyParser,mongoose,connect,contactSchema,sendDataToDatabase,searchFunction,servePage,isAdmin};

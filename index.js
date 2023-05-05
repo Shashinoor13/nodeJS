@@ -1,29 +1,34 @@
 const PORT_NUMBER =process.env.PORT || 3000;
-const {sendDataToDatabase,searchFunction,app,fs,bodyParser,mongoose,connect,contactSchema,servePage}=require('./imports.js');
+const {sendDataToDatabase,searchFunction,app,fs,bodyParser,mongoose,connect,contactSchema,servePage,isAdmin}=require('./imports.js');
 
-
+var ObjectId = require('mongodb').ObjectId; 
 app.use(bodyParser.urlencoded({extended:true}));
 
-
-app.get('/', (req, res) => {
-    servePage('home',res);
-});
-
-app.get('/about', (req, res) => {
-    servePage('about',res);
-});
-
-app.get('/contact', (req, res) => {
-    servePage('contact',res);
-});
-
-app.get('/home', (req, res) => {
-    servePage('home',res);
-});
-
-app.get('/fetch', (req, res) => {
-    servePage('fetch',res);
-});
+app.get('*',async(req,res)=>{
+    switch (req.path) {
+        case '/':
+            servePage('home',res,PORT_NUMBER);
+            break;
+        case '/about':
+            servePage('about',res,PORT_NUMBER);
+            break;
+        case '/contact':
+            servePage('contact',res,PORT_NUMBER);
+            break;
+        case '/home':
+            servePage('home',res,PORT_NUMBER);
+            break;
+        case '/fetch':
+            servePage('fetch',res,PORT_NUMBER);
+            break;
+        case '/delete':
+            servePage('forbidden',res,PORT_NUMBER);
+            break;
+        default:
+            res.status(404).render('error.pug', {title: "404: File Not Founds not exist."});
+            
+    }
+})
 
 
 app.post('/submit', (req, res) => {
@@ -35,11 +40,11 @@ app.post('/submit', (req, res) => {
     res.render('./submit.pug', {Name: senderName, Email: senderEmail, Message: senderMessage});
 });
 
-app.post('/check', (req, res) => {
+app.post('/check', async(req, res) => {
     const password = req.body.Password;
     const username = req.body.Username;
-    if(password == "1234" && username=="admin" ){
-        res.render('users.pug', {data: []});
+    if( await isAdmin(username,password)){
+        res.render('users.pug', {data: [],url:'/getAll'});
     }
     else{
         res.status(
@@ -51,7 +56,6 @@ app.post('/check', (req, res) => {
 app.post('/search', async(req, res) => {
     const searchValue = req.body.name;
     searchFunction(searchValue,req,res);
-    console.log(searchValue);
 });
 
 app.post('/getAll', async(req, res) => {
@@ -74,11 +78,15 @@ app.post('/getAll', async(req, res) => {
     delete mongoose.connection.models['contacts'];
 });
 
-app.use(handle404);
+app.post('/delete/:id', async(req, res) => {
+    const id = req.params.id;
+    backURL = req.header('Referer') || '/users';
+    console.log('Went to fn');
+    const messeges = new mongoose.model('contacts',contactSchema);
+    console.log(id);
+    await messeges.deleteOne({"_id":id})
+});
 
-function handle404(req, res) {
-    res.status(404).render('error.pug', {title: "404: File Not Found", message: "The page you are looking for does not exist.", error: "404",image:"https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-5529.jpg?w=1380&t=st=1683204594~exp=1683205194~hmac=58a8d2e241b53e29b56eabd68c9d1060b3bd34d1fd6b7fb2a68abc42583c69df"});
-}
 
 app.listen(PORT_NUMBER, () => {
     console.log(`Server is running on port ${PORT_NUMBER} \n http://localhost:${PORT_NUMBER}`);

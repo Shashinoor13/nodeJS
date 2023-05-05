@@ -36,8 +36,15 @@
             <label for="message">Message</label>
             <textarea class="form-control" id="message" rows="3" name="Message" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary" id ="Submit">Submit</button>
       </form>
     </div>
+    <script>
+      Document.addEventListener('DOMContentLoaded', function(){
+        Document.getElementById('Submit').addEventListener('click', function(){
+        alert('Thank you for your message!');
+      });
+      });
+    </script>
 </body>
 </html>
