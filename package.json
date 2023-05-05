@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "Simple nodeJS Express Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shashinoor Ghimire",
+  "license": "BSL-1.0 license",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shashinoor13/nodeJS"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

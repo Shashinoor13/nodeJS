@@ -1,8 +1,8 @@
 const PORT_NUMBER =process.env.PORT || 3000;
 const {sendDataToDatabase,searchFunction,app,fs,bodyParser,mongoose,connect,contactSchema,servePage,isAdmin}=require('./imports.js');
-
-var ObjectId = require('mongodb').ObjectId; 
+app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({extended:true}));
+
 
 app.get('*',async(req,res)=>{
     switch (req.path) {
