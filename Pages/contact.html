@@ -5,20 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Contact Page</title>
 </head>
 <body>
-    <div class="container">
-    <h1>Contact Page</h1>
-    <p>
-    <a href="home">Home</a>
-    <a href="about">About</a>
-    <a href="contact">Contact</a>
-    </p>
-    <p>
-    Contact Email: <a href="">shashinoorghimrie13@gmail.com</a>
-    </p>
-    <form style="width: 500px;" method="post" action="/submit">
+    <div class="container mx-auto ">
+      <nav class="nav nav-pills flex-column flex-sm-row p-5">
+        <a class="flex-sm-fill text-sm-center nav-link mx-3" href="home">Home</a>
+        <a class="flex-sm-fill text-sm-center nav-link mx-3" href="about">About</a>
+        <a class="flex-sm-fill text-sm-center nav-link active mx-3" href="contact">Contact</a>
+        <a href="fetch"><button type="button" class="btn btn-outline-success mx-3">Login</button></a>
+      </nav>
+   <div class="px-5">
+      Contact Email: <a href="">shashinoorghimrie13@gmail.com</a>
+      </p>
+   </div>
+   <h3 class="px-5 text-center">
+    Contact Form
+   </h3>
+    <form method="post" action="/submit" class="p-5">
         <div class="form-group">
             <label for="name">Your Name</label>
             <input type="text" class="form-control" id="YourName" placeholder="Your Name" name="Name" required>
@@ -36,15 +41,13 @@
             <label for="message">Message</label>
             <textarea class="form-control" id="message" rows="3" name="Message" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary" id ="Submit">Submit</button>
+        <div class="form-group">
+          <br>
+        <button type="submit" class="btn btn-primary form-control" id ="Submit">Submit</button>
+        </div>
       </form>
     </div>
-    <script>
-      Document.addEventListener('DOMContentLoaded', function(){
-        Document.getElementById('Submit').addEventListener('click', function(){
-        alert('Thank you for your message!');
-      });
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
