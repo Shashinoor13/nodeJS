@@ -19,6 +19,10 @@ html(lang="en")
                 input.form-control(name="name", type="text")
             .form-group
                 input.btn.btn-primary(type="submit", value="Search")
+        
+        form(action="/getAll", method="post")
+            .form-group
+                input.btn.btn-primary(type="submit", value="Search All")
 
         p #{data.length} results found
         table.table.table-hover.table-dark
