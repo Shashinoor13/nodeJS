@@ -37,10 +37,15 @@ app.get('*',async(req,res)=>{
                     const readStream =fs.createReadStream('./Pages/fetch.html','utf-8');
                     readStream.pipe(res);
                 }
-
             break;
         case '/delete':
             servePage('forbidden',res,PORT_NUMBER);
+            break;
+        case '/logout':
+            sessionData = req.session;
+            sessionData.destroy();
+            const readStream =fs.createReadStream('./Pages/home.html','utf-8');
+            readStream.pipe(res);
             break;
         default:
             res.status(404).render('error.pug', {title: "404: File Not Found",image:'/images/404.png'});
@@ -108,6 +113,7 @@ app.post('/delete/:id', async(req, res) => {
     const messeges = new mongoose.model('contacts',contactSchema);
     await messeges.deleteOne({"_id":id})
 });
+
 
 
 
