@@ -4,7 +4,7 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const env = require('dotenv').config();
-const url = process.env.MONGO_DB_URL;
+const url = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
 
 

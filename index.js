@@ -70,7 +70,6 @@ app.post('/check', async(req, res) => {
     sessionData.user = {};
     sessionData.user.username = username;
     sessionData.user.password = password;
-        console.log(sessionData.user.username);
     if( await isAdmin(username,password)){
         res.render('users.pug', {data: [],url:'/getAll'});
     }
