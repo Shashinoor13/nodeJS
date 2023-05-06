@@ -2,8 +2,10 @@ const PORT_NUMBER =process.env.PORT || 3000;
 const {sendDataToDatabase,searchFunction,app,fs,bodyParser,mongoose,connect,contactSchema,servePage,isAdmin}=require('./imports.js');
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({extended:true}));
+const express = require('express');
 
 
+app.use(express.static('public'));
 app.get('*',async(req,res)=>{
     switch (req.path) {
         case '/':
@@ -25,7 +27,7 @@ app.get('*',async(req,res)=>{
             servePage('forbidden',res,PORT_NUMBER);
             break;
         default:
-            res.status(404).render('error.pug', {title: "404: File Not Founds not exist."});
+            res.status(404).render('error.pug', {title: "404: File Not Found",image:'/images/404.png'});
             
     }
 })
@@ -48,7 +50,8 @@ app.post('/check', async(req, res) => {
     }
     else{
         res.status(
-            403).send('Forbidden');
+            403);
+        res.render('error.pug', {title: "403: Forbidden",image:'/images/403.png'});
     }
 });
 
@@ -81,9 +84,7 @@ app.post('/getAll', async(req, res) => {
 app.post('/delete/:id', async(req, res) => {
     const id = req.params.id;
     backURL = req.header('Referer') || '/users';
-    console.log('Went to fn');
     const messeges = new mongoose.model('contacts',contactSchema);
-    console.log(id);
     await messeges.deleteOne({"_id":id})
 });
 

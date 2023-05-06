@@ -1,0 +1,23 @@
+/* 
+To import inside the Pages directory, use the following path:
+<link rel="stylesheet" type="text/css" href="styles/style.css">
+*/
+
+/* Path: public/styles/style.css */
+/*Your Style Goes Here*/
+
+*{
+    /* border:red .5px dotted; */
+}
+
+#displayImage{
+    width: 25em;
+    height: 25em;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+#displayImage:hover{
+    transform: scale(1.1);
+}
