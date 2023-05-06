@@ -3,8 +3,11 @@ const {sendDataToDatabase,searchFunction,app,fs,bodyParser,mongoose,connect,cont
 app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({extended:true}));
 const express = require('express');
+const session = require('express-session');
 
+app.use(session({secret: 'sessionKEY', resave: true, saveUninitialized: true}))
 
+var sessionData;
 app.use(express.static('public'));
 app.get('*',async(req,res)=>{
     switch (req.path) {
@@ -21,7 +24,20 @@ app.get('*',async(req,res)=>{
             servePage('home',res,PORT_NUMBER);
             break;
         case '/fetch':
-            servePage('fetch',res,PORT_NUMBER);
+                sessionData = req.session;
+                let userObj = {};
+                if(sessionData.user) {
+                    userObj = sessionData.user;
+                 }
+                 console.log(userObj);
+                if(userObj.username && userObj.password){
+                    res.render('users.pug', {data: [],url:'/getAll'});
+                }
+                else{
+                    const readStream =fs.createReadStream('./Pages/fetch.html','utf-8');
+                    readStream.pipe(res);
+                }
+
             break;
         case '/delete':
             servePage('forbidden',res,PORT_NUMBER);
@@ -45,6 +61,11 @@ app.post('/submit', (req, res) => {
 app.post('/check', async(req, res) => {
     const password = req.body.Password;
     const username = req.body.Username;
+    sessionData = req.session;
+    sessionData.user = {};
+    sessionData.user.username = username;
+    sessionData.user.password = password;
+        console.log(sessionData.user.username);
     if( await isAdmin(username,password)){
         res.render('users.pug', {data: [],url:'/getAll'});
     }
