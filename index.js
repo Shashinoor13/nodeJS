@@ -7,6 +7,14 @@ const session = require('express-session');
 
 app.use(session({secret: 'sessionKEY', resave: true, saveUninitialized: true}))
 
+
+const googleAPI = process.env.GOOGLE_API;
+
+const googleMapsClient = require('@google/maps').createClient({
+    key: googleAPI,
+  });
+
+
 var sessionData;
 app.use(express.static('public'));
 app.get('*',async(req,res)=>{
@@ -46,6 +54,9 @@ app.get('*',async(req,res)=>{
             sessionData.destroy();
             const readStream =fs.createReadStream('./Pages/home.html','utf-8');
             readStream.pipe(res);
+            break;
+        case '/googlemap':
+            servePage('googlemap',res,PORT_NUMBER);
             break;
         default:
             res.status(404).render('error.pug', {title: "404: File Not Found",image:'/images/404.png'});
