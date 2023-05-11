@@ -18,7 +18,8 @@ The server is configured using environment variables, which are loaded from a `.
 
 ```
     - PORT : The port number that the server will listen on. Defaults to 3000 if not set.
-    - MONGO_DB_URL : The URL of the MongoDB database that the server will connect to. This must be set in order for the server to save form data to the database.
+    - MONGODB_URI : The URL of the MongoDB database that the server will connect to. This must be set in order for the server to save form data to the database.
+    - WEATHER_API2 :OpenWeather API key to get current location's weather.
 ```
 
 Create a `.env` file in the root directory of the project and set the environment variables as follows:
