@@ -1,0 +1,56 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+        link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css", integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm", crossorigin="anonymous")
+        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
+        meta(http-equiv="refresh", content="600")
+        title Weather
+        style(type="text/css").
+            html{
+                background: url(#{image}) no-repeat center center fixed;
+                background-size: cover;
+            }
+            body{
+                background: none;
+                display:flex;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+            }
+            .container{
+                width: 450px;
+            }
+            .jumbotron{
+                background: rgba(200,200,170,0.5);
+                border-radius:30px;
+            }
+            h1{
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 700;
+                font-size: 50px;
+                color: #fff;
+            }
+                                
+        body
+            .container
+                .jumbotron
+                    .text-center
+                        img(src=`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`, alt="")
+                        h1.text-center #{locationName}
+                        h4.text-center Temperature: #{Math.floor(data.main.temp -273)} ºC
+                        h4.text-center Feels Like: #{Math.floor(data.main.feels_like -273)} ºC
+                        h3.text-center#time #{time1} 
+            
+            script.
+                var t=setInterval(runFunction,1000);
+                function runFunction(){
+                    var date = new Date();
+                    var time = date.toLocaleTimeString();
+                    var time1 = date.toLocaleTimeString();
+                    document.getElementById("time").innerHTML = time1;
+                }
+

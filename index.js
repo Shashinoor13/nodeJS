@@ -4,11 +4,17 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded({extended:true}));
 const express = require('express');
 const session = require('express-session');
+const moment = require('moment');
+const NodeGeocoder = require('node-geocoder');
+
 
 app.use(session({secret: 'sessionKEY', resave: true, saveUninitialized: true}))
 
 
-const googleAPI = process.env.GOOGLE_API;
+
+const waeatherAPI = process.env.WEATHER_API2;
+googleAPI = process.env.GOOGLE_API;
+
 
 const googleMapsClient = require('@google/maps').createClient({
     key: googleAPI,
@@ -55,8 +61,33 @@ app.get('*',async(req,res)=>{
             const readStream =fs.createReadStream('./Pages/home.html','utf-8');
             readStream.pipe(res);
             break;
-        case '/googlemap':
-            servePage('googlemap',res,PORT_NUMBER);
+        case '/weather':
+            var timestamp = Date.now();
+            var time = moment(timestamp).format('h:mm:ss a');
+            giveninfo = await giveWeather();
+            switch(giveninfo.list[0].weather[0].main){
+                case 'Clouds':
+                    background="/images/cloudy.jpg";
+                    break;
+                case 'Rain':
+                    background="balck";
+                    break;
+
+                case 'Drizzle':
+                    background="green";
+                    break;
+
+                case 'Thunderstorm':
+                    background="/images/thunder.jpg";
+                    break;
+
+                case 'Snow':
+                    background="white";
+                    break;
+                default:
+                    background = "/images/sunny.jpg";
+            }
+            res.render('weather.pug',{data:giveninfo.list[0],image:background,time1:time,locationName:giveninfo.city.name});
             break;
         default:
             res.status(404).render('error.pug', {title: "404: File Not Found",image:'/images/404.png'});
@@ -97,6 +128,7 @@ app.post('/search', async(req, res) => {
     searchFunction(searchValue,req,res);
 });
 
+
 app.post('/getAll', async(req, res) => {
     await connect.conntectToDatabase();
     const messeges = new mongoose.model('contacts',contactSchema);
@@ -124,8 +156,19 @@ app.post('/delete/:id', async(req, res) => {
     await messeges.deleteOne({"_id":id})
 });
 
-
-
+async function giveWeather(){
+    const url = `https://api.maptiler.com/geolocation/ip.json?key=H98yVYlZ50w07zq3S4Z5`;
+    const response = await fetch(url);
+    const location = await response.json();
+    console.log(location);
+    const lat = location.latitude;
+    const lon = location.longitude;
+    const city = location.city;
+    const result =await  fetch(`http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${waeatherAPI}&lat=${lat}&lon=${lon}`);
+    const data = await result.json();
+    console.log(data);
+    return data;
+}
 
 app.listen(PORT_NUMBER, () => {
     console.log(`Server is running on port ${PORT_NUMBER} \n http://localhost:${PORT_NUMBER}`);
