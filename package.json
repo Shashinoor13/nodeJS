@@ -17,7 +17,6 @@
     "url": "https://github.com/Shashinoor13/nodeJS"
   },
   "dependencies": {
-    "@mapbox/timespace": "^2.0.4",
     "bootstrap": "^5.2.3",
     "express": "^4.17.1",
     "express-session": "^1.17.3",
